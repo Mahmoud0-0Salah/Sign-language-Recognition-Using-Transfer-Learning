@@ -14,10 +14,14 @@ transform = transforms.Compose([
 ])
 
 # Load the model
-model = models.resnet18()
-num_ftrs = model.fc.in_features
-model.fc = nn.Linear(num_ftrs, 4)
-model.load_state_dict(torch.load('model_params.pth'))
+# model = models.resnet18()
+# num_ftrs = model.fc.in_features
+# model.fc = nn.Linear(num_ftrs, 4)
+# model.load_state_dict(torch.load('model_params.pth'))
+
+model = models.mobilenet_v2(pretrained=True)
+model.classifier[1] = nn.Linear(1280, 4)
+model.load_state_dict(torch.load('model_params_mobilenetv2.pth'))
 model.eval()
 
 # OpenCV setup
