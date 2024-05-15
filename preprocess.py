@@ -75,12 +75,14 @@ def extract_hand_from_img(image):
 
 
 def preprocess_img(image, transform):
+    hand_extracted = True
     hand = extract_hand_from_img(image)
     print(type(hand))
     if not hand:
         hand = Image.fromarray(image)
+        hand_extracted = False
 
     image = transform(hand)
     image = image.unsqueeze(0)
     print("after")
-    return image
+    return image, hand_extracted

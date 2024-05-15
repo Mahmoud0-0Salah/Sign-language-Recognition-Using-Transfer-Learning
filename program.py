@@ -5,7 +5,7 @@ import cv2
 import torchvision.models as models
 import preprocess
 
-labels = ['Fine', 'Hello', 'I love you', 'Water', 'You']
+labels = ['Hello', 'I love you', 'Water', 'You']
 
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
@@ -16,7 +16,7 @@ transform = transforms.Compose([
 # Load the model
 model = models.resnet18()
 num_ftrs = model.fc.in_features
-model.fc = nn.Linear(num_ftrs, 5)
+model.fc = nn.Linear(num_ftrs, 4)
 model.load_state_dict(torch.load('model_params.pth'))
 model.eval()
 
@@ -31,14 +31,17 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('o'):
         # Preprocess the captured frame
         image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        image = preprocess.preprocess_img(image, transform)
+        image, hand_extracted = preprocess.preprocess_img(image, transform)
+        if not hand_extracted:
+            print(".....")
         # Predict the label
-        with torch.no_grad():
-            outputs = model(image)
-            _, predicted = torch.max(outputs, 1)
-            print(outputs, predicted, predicted[0])
-            predicted_label = labels[predicted.item()]
-            print("Predicted label:", predicted_label)
+        else:
+            with torch.no_grad():
+                outputs = model(image)
+                _, predicted = torch.max(outputs, 1)
+                print(outputs, predicted, predicted[0])
+                predicted_label = labels[predicted.item()]
+                print("Predicted label:", predicted_label)
     
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
