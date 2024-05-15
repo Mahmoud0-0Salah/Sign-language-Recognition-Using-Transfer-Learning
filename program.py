@@ -29,26 +29,27 @@ cap = cv2.VideoCapture(0)
 
 while True:
     ret, frame = cap.read()
+
+    # Preprocess the captured frame
+    image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    image, hand_extracted = preprocess.preprocess_img(image, transform)
+    
+    if hand_extracted:
+        # Predict the label
+        with torch.no_grad():
+            outputs = model(image)
+            _, predicted = torch.max(outputs, 1)
+            predicted_label = labels[predicted.item()]
+
+            # Display the predicted label on the frame
+            cv2.putText(frame, predicted_label, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+
+    # Display the frame
     cv2.imshow('Frame', frame)
 
-    # Press 'o' to capture frame and predict
-    if cv2.waitKey(1) & 0xFF == ord('o'):
-        # Preprocess the captured frame
-        image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        image, hand_extracted = preprocess.preprocess_img(image, transform)
-        if not hand_extracted:
-            print(".....")
-        # Predict the label
-        else:
-            with torch.no_grad():
-                outputs = model(image)
-                _, predicted = torch.max(outputs, 1)
-                print(outputs, predicted, predicted[0])
-                predicted_label = labels[predicted.item()]
-                print("Predicted label:", predicted_label)
-    
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+
 # Release the video capture and close OpenCV windows
 cap.release()
 cv2.destroyAllWindows()
