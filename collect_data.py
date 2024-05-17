@@ -4,7 +4,7 @@ import cv2
 
 IMAGES_PATH = 'data/'
 
-labels = ['You', 'Fine', 'Water', 'Hello', 'I love you']
+labels = ['You', 'Water', 'Hello', 'I love you']
 number_imgs = 10
 
 for label in labels:

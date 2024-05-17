@@ -3,8 +3,7 @@ import cv2
 
 IMAGES_PATH = 'data/'
 
-labels = ['you', 'fine', 'water', 'hello', 'i love you']
-number_imgs = 10
+labels = ['You', 'Water', 'Hello', 'I love you']
 
 for label in labels:
    
@@ -16,12 +15,12 @@ for label in labels:
             img = cv2.imread(img_path)
 
             # Create darker version
-            darker_img = cv2.subtract(img, 50)  # Adjust this value for desired darkness
+            darker_img = cv2.subtract(img, 50)
             darker_output_path = os.path.join(folder_path, f"{os.path.splitext(filename)[0]}_darker.jpg")
             cv2.imwrite(darker_output_path, darker_img)
 
             # Create lighter version
-            lighter_img = cv2.add(img, 50)  # Adjust this value for desired lightness
+            lighter_img = cv2.add(img, 50)
             lighter_output_path = os.path.join(folder_path, f"{os.path.splitext(filename)[0]}_lighter.jpg")
             cv2.imwrite(lighter_output_path, lighter_img)
 
